@@ -85,9 +85,12 @@ def test_vocabulary_index_alias_mapping():
     assert alias_map["primary dormancy"] == "seed-dormancy"
 
 
-def test_full_text_search_throttled_validation():
+def test_full_text_search_throttled_validation(tmp_path):
     """Verify load_index reuses loaded index within validation interval."""
-    search = FullTextSearch()
+    wiki = tmp_path / "wiki"
+    (wiki / "sources").mkdir(parents=True)
+    (wiki / "sources" / "test_doc.md").write_text("# Test\nSample content for search index\n", encoding="utf-8")
+    search = FullTextSearch(str(wiki))
     search.load_index()
     assert len(search.doc_metadata) > 0
 

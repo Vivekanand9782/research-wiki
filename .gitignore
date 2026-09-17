@@ -79,3 +79,5 @@ driver_progress.json
 agent_deep_summary_state.json
 search_index*.json
 vocabulary_index.json
+research_agent/output/
+generated_content/

@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "research-wiki"
+version = "2.0.0"
+description = "High-performance scientific knowledge graph, sub-millisecond SQLite FTS5 RAG & multi-hop citation reasoning agent"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Proprietary / All Rights Reserved"}
+authors = [
+    {name = "Vivekanand Sirohi"}
+]
+keywords = [
+    "academic-rag",
+    "scientific-knowledge-graph",
+    "sqlite-fts5",
+    "bm25-retrieval",
+    "obsidian-vault",
+    "citation-graph",
+    "research-agent",
+    "literature-synthesis"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "License :: Other/Proprietary License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+dependencies = [
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "PyMuPDF>=1.23.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "PyYAML>=6.0.1",
+    "pydantic>=2.0.0",
+    "rich>=13.0.0",
+    "beautifulsoup4>=4.12.0",
+    "urllib3>=2.0.0",
+    "fastmcp>=2.0.0",
+    "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-subtests>=0.11.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+rag-query = "query:main"
+lint-wiki = "lint_wiki:main"
+
+[project.urls]
+"Repository" = "https://github.com/Vivekanand9782/research-wiki"
+"Bug Tracker" = "https://github.com/Vivekanand9782/research-wiki/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]

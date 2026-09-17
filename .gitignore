@@ -1,0 +1,81 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments & dependencies
+.env
+.env.*
+!.env.example
+venv/
+.venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Operating System & IDEs
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.vscode/
+.idea/
+.obsidian/
+*.swp
+*.swo
+
+# Local agent, editor, and graph metadata
+.kiro/
+.commandcode/
+.agents/
+.gemini/
+.understand-anything/
+.quarantine/
+.attic/
+.backup/
+graphify-out/
+
+# Research Corpus & Database files (Exclude 1.5 GB data / copyright-protected papers)
+raw/papers/
+raw/*.sqlite3*
+*.sqlite3*
+*.db
+*.log
+*.pid
+*.pdf
+*.docx
+*.xlsx
+
+# Generated Knowledge Graph Vault (Generate on the fly via ingest_parallel.py)
+wiki/sources/
+wiki/entities/
+wiki/concepts/
+wiki/synthesis/
+wiki/.obsidian/
+wiki/search_index.json
+wiki/vocabulary_index.json
+wiki/unresolved_citations.json
+wiki_lint_report.md
+wiki_lint_semantic_report.md
+
+# Large run manifests and agent states
+agent_worklist*.json
+processed_papers.json
+resummarize_state.json
+census_report.json
+agent_render_report.json
+subagent_queue.json
+driver_progress.json
+agent_deep_summary_state.json
+search_index*.json
+vocabulary_index.json

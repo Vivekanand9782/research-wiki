@@ -1,0 +1,21 @@
+# Project Context and Rules
+
+## Folder Structure Constraints
+- `../data/`: Place all raw PDF research papers here for ingestion.
+- `raw/papers/`: Stores the raw extracted plaintext (`.txt` files) from the PDFs.
+- `raw/assets/`: Stores the extracted figures and images (`.png` files) from the PDFs.
+- `wiki/sources/`: Stores the highly structured, final AI-generated Markdown summaries.
+
+## AI Pipeline (`pdf_extractor.py`)
+- The main pipeline logic resides entirely in `pdf_extractor.py`.
+- It processes PDFs from `../data/`.
+- It saves raw `.txt` files into `raw/papers/` *before* passing the text to the LLM.
+- The output Markdown files MUST adhere to the 12-section schema (Title & Metadata, Abstract, Introduction, Key Concepts, Important Entities, etc.).
+- Images are filtered via PyMuPDF and analyzed using Vision models before being saved to `raw/assets/`.
+
+## General Guidelines
+- Do not use or recreate `pdf_extractor_refactored.py`. The single source of truth is `pdf_extractor.py`.
+- When updating the extractor, ensure you maintain the `vertex_client` integration and the retry/repair loops for AI responses.
+- Ensure dependencies (`unstructured`, `pymupdf`, `pytesseract`, `pdf2image`) are intact when setting up the environment.
+- Always read the `context.txt` file to fully understand the project architecture, goals, and components before beginning any work.
+- Always read the `log.txt` file to understand the system state, previous session history, and any recent activity before beginning new work or tasks.

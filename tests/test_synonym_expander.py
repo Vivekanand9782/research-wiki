@@ -2,19 +2,12 @@
 
 from __future__ import annotations
 
-import re
-import sqlite3
 from pathlib import Path
 
-import pytest
 from rag_engine import (
     DOMAIN_SYNONYM_CLUSTERS,
     RAGEngine,
-    _GENE_QTL_RE,
-    _NUMERIC_MEASURE_RE,
-    _PERCENTAGE_RE,
 )
-from research_retrieval import FullTextSearch
 
 
 def _setup_synonym_corpus(tmp_path: Path) -> tuple[RAGEngine, Path]:

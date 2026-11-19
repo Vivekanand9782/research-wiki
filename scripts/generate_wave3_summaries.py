@@ -1,7 +1,6 @@
 """
 Generate Wave 3 Summaries for PHS Tolerance
 """
-import os
 import sys
 from pathlib import Path
 

@@ -9,7 +9,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from validation import SummaryValidator
 import lint_wiki
-from scripts.resummarize_queue import mark_done, load_state, print_status
+from scripts.resummarize_queue import mark_done, print_status
 
 from scripts.bioethanol_batch1 import BATCH_1
 from scripts.bioethanol_batch2 import BATCH_2

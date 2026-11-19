@@ -5,7 +5,6 @@ Usage: python3 dispatch_batch.py <start_chunk> <end_chunk>
 Example: python3 dispatch_batch.py 0 9
 """
 import sys
-import json
 from pathlib import Path
 
 # Load extraction spec

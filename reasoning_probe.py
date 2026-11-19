@@ -1,5 +1,5 @@
 """test_reasoning.py — check where sensenova emits tokens at various configs."""
-import httpx, os, time, json, sys
+import httpx, os, time, sys
 keys = os.environ.get('HCNSEC_KEYS','').split(',')
 keys = [k.strip() for k in keys if k.strip()]
 if not keys: sys.exit('no keys')
@@ -17,7 +17,6 @@ def probe(name, messages, max_tokens, extra=None):
     msg = data.get('choices',[{}])[0].get('message',{}) if 'error' not in data else {}
     content = msg.get('content','') or ''
     reasoning = msg.get('reasoning','') or ''
-    usage = data.get('usage',{})
     err = data.get('error')
     print(f'{name}: {tt:.1f}s content={len(content)} reason={len(reasoning)} err={err}')
     if content: print(f'  content[0:100]: {content[:100]}')

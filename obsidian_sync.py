@@ -1,9 +1,6 @@
 """Obsidian vault sync - export wiki to Obsidian-compatible format."""
-import os
 import shutil
-import re
 from pathlib import Path
-from typing import Dict, List, Optional
 from datetime import datetime
 
 

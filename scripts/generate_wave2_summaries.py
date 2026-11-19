@@ -7,7 +7,6 @@ writes them to wiki/sources/uncategorized/<stem>.md, and updates the queue state
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add project root to sys.path

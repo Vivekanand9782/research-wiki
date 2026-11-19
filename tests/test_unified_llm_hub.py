@@ -16,7 +16,6 @@ import sys
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
 
 _HERE = Path(__file__).resolve().parent
 REPO_ROOT = _HERE.parent

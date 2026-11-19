@@ -12,9 +12,8 @@ import io
 import json
 import urllib.error
 from unittest.mock import patch, MagicMock
-import pytest
 
-from research_agent import agent, llm, wiki_tools
+from research_agent import agent, llm
 
 
 def test_max_obs_chars_is_8000():

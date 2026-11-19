@@ -27,7 +27,6 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import Any
 
 from pdf_extractor import ResearchPaperExtractor
 from pipeline_state import PipelineState, fingerprint_file

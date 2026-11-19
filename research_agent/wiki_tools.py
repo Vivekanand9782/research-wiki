@@ -11,7 +11,6 @@ import json
 import os
 import re
 import sys
-from dataclasses import asdict
 from pathlib import Path
 
 ANTIGRAVITY_ROOT = Path(

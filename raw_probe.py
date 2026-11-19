@@ -1,5 +1,5 @@
 """raw_probe.py — send a tiny prompt, measure TTFT, and dump raw response bytes."""
-import httpx, os, time, json, sys
+import httpx, os, time, sys
 keys = os.environ.get('HCNSEC_KEYS','').split(',')
 keys = [k.strip() for k in keys if k.strip()]
 if not keys: sys.exit('no keys')

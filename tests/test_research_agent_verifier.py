@@ -4,9 +4,7 @@ Fully offline: no LLM, no network. Exercises grounding, citation-existence,
 abstention, and the repair-message builder.
 """
 
-import pytest
 
-from research_agent import verifier
 from research_agent.verifier import (
     GroundingReport,
     extract_cited_paths,

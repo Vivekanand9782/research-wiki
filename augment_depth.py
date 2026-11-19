@@ -60,10 +60,6 @@ def _relevant_sentences(sentences, section_name: str, existing_claims: list[str]
         return []
 
     kw_norm = [_normalise_for_quote_match(k) for k in keywords]
-    stop = {'the', 'and', 'for', 'with', 'that', 'this', 'from', 'were', 'was',
-            'are', 'been', 'have', 'has', 'had', 'not', 'but', 'all', 'into',
-            'each', 'than', 'when', 'which', 'their', 'they', 'also', 'both',
-            'more', 'over', 'such', 'under', 'only', 'using', 'used', 'shown'}
 
     def score(sent_norm):
         score_val = 0
@@ -131,8 +127,6 @@ def augment_sidecar(stem: str, dry_run: bool = False, verbose: bool = False) -> 
 
         current_text = sec.get("text", "")
         current_words = len(current_text.split())
-        raw_words = len(source_raw.split())
-        min_w = min(2800, max(1200, int(raw_words * 0.5)))
 
         # Target: 400-600 words for Key Results, 300-450 for others
         target_words = 450 if "Key Results" in sec_name else 350

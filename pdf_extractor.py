@@ -10,15 +10,13 @@ except ImportError:
         fitz = None  # PyMuPDF
 from pathlib import Path
 import json
-import hashlib
-import numpy as np
 import shutil
 import re
 import tempfile
 import threading
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
 from genai_client import get_ai_response, generate_content_with_retry
 import config
@@ -662,7 +660,6 @@ class ResearchPaperExtractor:
         500 chars as a single "key point". Lets Stage A still run with
         partial coverage rather than blowing up the whole paper.
         """
-        import json as _json
         from prompts import (
             aggregate_chunk_intermediates,
             build_chunk_summary_prompt,
@@ -798,7 +795,7 @@ class ResearchPaperExtractor:
 
         try:
             payload = _clean_and_parse(raw)
-        except Exception as exc:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
             # Truncation at the model's 8K output-token cap is the usual
             # culprit for mid-JSON cuts ("Expecting ',' delimiter",
             # "Expecting property name..."). Retry once with a compact-output

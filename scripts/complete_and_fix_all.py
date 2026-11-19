@@ -5,7 +5,6 @@ from pathlib import Path
 sys.path.insert(0, '.')
 import validation
 import lint_wiki
-import prompts
 from scripts.resummarize_queue import mark_done
 
 SOURCES_DIR = Path("wiki/sources/uncategorized")

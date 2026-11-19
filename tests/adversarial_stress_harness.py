@@ -7,9 +7,7 @@ latency benchmarks, entity preservation checks, and CLI verification.
 
 from __future__ import annotations
 
-import collections
 import json
-import os
 import re
 import subprocess
 import sys
@@ -25,13 +23,8 @@ if str(WORKSPACE_ROOT) not in sys.path:
     sys.path.insert(0, str(WORKSPACE_ROOT))
 
 from rag_engine import (
-    DOMAIN_SYNONYM_CLUSTERS,
     CitationBackfillResult,
-    ClaimVerificationResult,
     RAGEngine,
-    _GENE_QTL_RE,
-    _NUMERIC_MEASURE_RE,
-    _PERCENTAGE_RE,
     _compute_adaptive_window,
 )
 

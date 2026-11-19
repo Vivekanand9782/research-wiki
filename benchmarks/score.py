@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import re
 from dataclasses import asdict, dataclass
-from typing import Optional
 
 # These imports are heavy enough to defer until first use.
 

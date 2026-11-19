@@ -170,7 +170,6 @@ def fix_sidecar(stem: str, dry_run: bool = False, verbose: bool = False) -> dict
             total_quotes += 1
             claim = r.get("claim", "")
             old_quote = r.get("evidence_quote", "")
-            source_locator = r.get("source_locator", "")
 
             # Direct verification
             if old_quote and _verify_quote_in_source(old_quote, source_norm):

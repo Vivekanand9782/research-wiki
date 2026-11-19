@@ -26,7 +26,6 @@ import json
 import re
 import sys
 import time
-import traceback
 from collections import defaultdict
 from pathlib import Path
 
@@ -35,14 +34,9 @@ sys.path.insert(0, str(ROOT))
 
 # Reuse all prompt-building primitives from the existing tool.
 from lint_wiki_semantic import (  # noqa: E402
-    AUDIT_PROMPT,
-    INDEX_CHAR_LIMIT,
-    PER_PAGE_CHAR_LIMIT,
     WIKI_DIR,
     _build_prompt,
     _candidate_pages,
-    _format_page_block,
-    _read_index,
     _select_recent,
 )
 import config  # noqa: E402

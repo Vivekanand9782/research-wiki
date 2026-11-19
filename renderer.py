@@ -39,14 +39,12 @@ from __future__ import annotations
 import datetime as _dt
 import re
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Optional
+from typing import Any
 
 from prompts import (
     FORMAT_VERSION,
     FRONTMATTER_KEYS,
     NOT_REPORTED,
-    PAPER_TYPES,
-    DEFAULT_PAPER_TYPE,
     headers_for,
     required_headers,
 )

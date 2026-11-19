@@ -6,9 +6,9 @@ import time
 from pathlib import Path
 
 import pytest
-from rag_engine import _jaccard_similarity, _tokenize_text_set
+from rag_engine import _jaccard_similarity
 from research_retrieval import FullTextSearch, _is_excluded_path
-from wiki_vocabulary import VocabularyEntry, VocabularyIndex, _build_alias_to_slug, get_index
+from wiki_vocabulary import VocabularyEntry, _build_alias_to_slug
 
 
 def test_is_excluded_path_equivalence():

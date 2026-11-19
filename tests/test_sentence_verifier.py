@@ -1,6 +1,5 @@
 """Tests for sentence_verifier.py — exact-sentence hallucination detection."""
 
-import pytest
 from sentence_verifier import (
     extract_sentences,
     extract_factual_sentences_from_summary,

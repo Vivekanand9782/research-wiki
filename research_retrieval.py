@@ -586,9 +586,6 @@ class FullTextSearch:
         self._raw_index_signature: str | None = None
         self._last_index_validation_time: float = 0.0
         self._last_directory_signature: tuple | None = None
-        self._last_raw_validation_time: float = 0.0
-        self._cached_raw_paths: list[Path] = []
-        self._raw_folder_signature: tuple | None = None
 
     def _wiki_folders_signature(self) -> tuple[tuple[str, int], ...]:
         sig = []
@@ -598,18 +595,6 @@ class FullTextSearch:
                 sig.append((folder_name, p.stat().st_mtime_ns))
             except OSError:
                 sig.append((folder_name, -1))
-        return tuple(sig)
-
-    def _raw_folders_signature(self) -> tuple[int, ...]:
-        sig = []
-        if self.raw_root.is_dir():
-            try:
-                sig.append(self.raw_root.stat().st_mtime_ns)
-                for sub in sorted(self.raw_root.iterdir()):
-                    if sub.is_dir():
-                        sig.append(sub.stat().st_mtime_ns)
-            except OSError:
-                pass
         return tuple(sig)
 
     def _reset_runtime_caches(self) -> None:
@@ -1276,14 +1261,6 @@ class FullTextSearch:
                 current[path.relative_to(self.wiki_folder).as_posix()] = path
         return current
 
-    def _is_stale(self) -> bool:
-        if self.index_version != INDEX_VERSION:
-            return True
-        if not (self.wiki_folder / DOCS_FILENAME).exists():
-            return True
-        changed, removed = self._changed_files()
-        return bool(changed or removed)
-
     def _changed_files(self) -> tuple[dict[str, Path], set[str]]:
         """Split the corpus into pages needing re-indexing and vanished pages.
 
@@ -1436,17 +1413,6 @@ class FullTextSearch:
     # ------------------------------------------------------------------
     # Ranking and passages
     # ------------------------------------------------------------------
-
-    @staticmethod
-    def _contexts_for_terms(terms: Iterable[str]) -> set[str]:
-        term_set = set(terms)
-        if not (_DORMANCY_TOKENS & term_set):
-            return set()
-        return {
-            context
-            for context, markers in _DORMANCY_CONTEXT_TOKENS.items()
-            if markers & term_set
-        }
 
     @staticmethod
     def _contexts_for_text(text: str, wanted: Iterable[str] | None = None) -> set[str]:
@@ -1817,45 +1783,6 @@ class FullTextSearch:
         if end < len(text):
             snippet += "..."
         return snippet
-
-    def _generate_snippet(
-        self,
-        content: str,
-        query_tokens: Sequence[str],
-        context_chars: int = 150,
-    ) -> str:
-        """Backward-compatible snippet helper used by older callers."""
-        plan = QueryPlan(
-            query=" ".join(query_tokens),
-            base_tokens=_ordered_unique(query_tokens),
-            term_weights={token: 1.0 for token in _ordered_unique(query_tokens)},
-            phrases=(),
-            canonical_terms=(),
-        )
-        best = self._best_passage(content, plan)
-        if best is None:
-            return _SPACE_RE.sub(" ", content[: context_chars * 2]).strip()
-        return self._snippet_from_passage(best.passage, plan, context_chars * 2)
-
-    def _source_content(self, metadata: Mapping[str, Any], mode: str) -> tuple[str, str]:
-        wiki_path = str(metadata.get("path", "") or "")
-        if mode in {"hybrid", "evidence"}:
-            raw_path = str(metadata.get("raw_path", "") or "")
-            if raw_path:
-                absolute = self.project_root / raw_path
-                try:
-                    return absolute.read_text(encoding="utf-8", errors="replace"), raw_path
-                except OSError:
-                    pass
-        doc_id = next(
-            (
-                key
-                for key, value in self.doc_metadata.items()
-                if value is metadata
-            ),
-            "",
-        )
-        return self.documents.get(doc_id, ""), wiki_path
 
     def _result_from_document(
         self,
@@ -2311,13 +2238,6 @@ class FullTextSearch:
             if len(self._summary_query_cache) > SUMMARY_QUERY_CACHE_SIZE:
                 self._summary_query_cache.popitem(last=False)
         return returned
-
-    def search_entities(self, query: str, **kwargs: Any) -> list[SearchResult]:
-        return self.search(query, doc_type="entity", **kwargs)
-
-    def search_papers(self, query: str, **kwargs: Any) -> list[SearchResult]:
-        return self.search(query, doc_type="paper", **kwargs)
-
 
 __all__ = [
     "DOC_TYPES",

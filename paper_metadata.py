@@ -14,7 +14,6 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from pathlib import Path
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -40,25 +39,6 @@ def _clean_doi_candidate(value: str) -> str | None:
 def extract_doi_from_text(text: str) -> str | None:
     """Pull the first clean DOI from a block of text."""
     return _clean_doi_candidate(text)
-
-
-def extract_doi_from_pdf(pdf_path: str | Path) -> str | None:
-    """Extract DOI from a PDF — checks metadata dict first, then scans page text."""
-    import pymupdf  # lazy import so the module can be imported without the dep
-
-    doc = pymupdf.open(pdf_path)
-    try:
-        # 1. PDF info dict sometimes carries a DOI.
-        meta = doc.metadata or {}
-        doi = _clean_doi_candidate(meta.get("doi", "") or meta.get("subject", ""))
-        if doi:
-            return doi
-
-        # 2. Scan first 3 pages for a DOI string.
-        text = "".join(doc[i].get_text() for i in range(min(3, len(doc))))
-        return _clean_doi_candidate(text)
-    finally:
-        doc.close()
 
 
 # ---------------------------------------------------------------------------

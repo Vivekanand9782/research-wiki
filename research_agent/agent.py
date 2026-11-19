@@ -211,10 +211,6 @@ def _deterministic_hit_list(
     return "\n".join(lines)
 
 
-def _tools_only_listing(query: str, top_k: int, mode: str) -> str:
-    return _deterministic_hit_list(query, top_k=top_k, mode=mode, reason="tools-only; LLM not available")
-
-
 def run(query: str, *, top_k: int = 8, mode: str = "hybrid", max_turns: int = 10,
         use_llm: bool = True, quiet: bool = False) -> str:
     stats = wiki_tools.wiki_stats()

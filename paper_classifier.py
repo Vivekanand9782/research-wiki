@@ -91,9 +91,6 @@ class ClassificationResult:
     source: str  # "heuristic" | "llm" | "default"
     rationale: str = ""
 
-    def is_default(self) -> bool:
-        return self.source == "default"
-
 
 # ---------------------------------------------------------------------------
 # Public API

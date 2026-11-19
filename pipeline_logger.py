@@ -70,14 +70,6 @@ class PipelineLogger:
         if not self.current_paper or "pdf_file" not in self.current_paper:
             raise RuntimeError("start_paper() must be called before logging paper-specific data.")
 
-    def log_figures(self, junk: int, uncertain: int, processed: int):
-        with self._lock:
-            self._ensure_paper_started()
-            self.current_paper["figures_junk"] += junk
-            self.current_paper["figures_uncertain"] += uncertain
-            self.current_paper["figures_processed"] += processed
-            self.current_paper["figures_extracted"] += (junk + uncertain + processed)
-
     def log_summary_validation(self, passed: bool, retry_count: int, char_count: int):
         with self._lock:
             self._ensure_paper_started()
@@ -95,11 +87,6 @@ class PipelineLogger:
             self.current_paper["hallucination_unverified_count"] = unverified_count
             self.current_paper["hallucination_repair_attempts"] = repair_attempt
             self.current_paper["hallucination_unverified_sentences"] = unverified_sentences
-
-    def log_warning(self, warning_message: str):
-        with self._lock:
-            self._ensure_paper_started()
-            self.current_paper["warnings"].append(warning_message)
 
     def log_error(self, error_message: str):
         with self._lock:

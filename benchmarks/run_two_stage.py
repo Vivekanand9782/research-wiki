@@ -94,11 +94,6 @@ def stratified_sample(
 # Scoring
 # ---------------------------------------------------------------------------
 
-def score_both(legacy_md: str, two_stage_md: str, *, vocab_index, paper):
-    from benchmarks.score import compare_summaries
-    return compare_summaries(paper, legacy_md, two_stage_md, vocab_index=vocab_index)
-
-
 def score_single(md: str, *, vocab_index):
     from benchmarks.score import score_summary
     return score_summary(md, vocab_index=vocab_index)

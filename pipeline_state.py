@@ -187,10 +187,6 @@ class PipelineState:
                 return 1
             return 0
 
-    def steps(self) -> list[str]:
-        with self._lock:
-            return sorted(self._data.keys())
-
     def stats(self) -> dict[str, int]:
         with self._lock:
             return {

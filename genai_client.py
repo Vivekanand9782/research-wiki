@@ -10,8 +10,6 @@ to the workspace chat-completions endpoint (default ``https://api.generalcompute
 from __future__ import annotations
 
 import base64
-import hashlib
-import mimetypes
 import os
 import re
 import threading
@@ -425,11 +423,6 @@ class RotatingOpenAIClient:
     def __len__(self) -> int:
         return len(self.api_keys)
 
-    @property
-    def current_index(self) -> int:
-        with self._lock:
-            return self._cursor % len(self.api_keys) if self.api_keys else 0
-
     def has_keys(self) -> bool:
         with self._lock:
             return any(i not in self._disabled for i in range(len(self.api_keys)))
@@ -507,15 +500,6 @@ class RotatingOpenAIClient:
             index = min(active, key=lambda item: self._cooldown_until.get(item, now))
             self._cursor = (index + 1) % len(self.api_keys)
             return index, self.api_keys[index]
-
-    def get_client(self) -> str:
-        """Compatibility helper returning the next credential slot value."""
-        return self.acquire_key()[1]
-
-    def rotate_client(self) -> None:
-        with self._lock:
-            if self.api_keys:
-                self._cursor = (self._cursor + 1) % len(self.api_keys)
 
     def mark_rate_limited(self, index: int, retry_after: float) -> None:
         with self._lock:
@@ -972,56 +956,6 @@ def get_ai_response(
         return f"AI Error: {exc}"
 
 
-def _image_part(image_path: str) -> dict[str, Any]:
-    mime_type = mimetypes.guess_type(image_path)[0] or "image/png"
-    with open(image_path, "rb") as image_file:
-        image_bytes = image_file.read()
-    return {"inline_data": {"mime_type": mime_type, "data": image_bytes}}
-
-
-def analyze_image(image_path: str, context: str = "", retries: int = 5) -> str:
-    """Analyze a scientific figure/image with context."""
-    try:
-        prompt = f"Describe this scientific figure/table/diagram in detail. Context: {context}"
-        response = generate_content_with_retry(
-            model=_resolve_model(getattr(config, "VISION_MODEL", None)),
-            contents=[prompt, _image_part(image_path)],
-            config_params={"temperature": 0, "top_p": 0.95},
-            retries=retries,
-        )
-        return response.text
-    except Exception as exc:
-        return f"Vision Error: {exc}"
-
-
-def is_valid_scientific_figure(image_path: str, retries: int = 5) -> str:
-    """Filter out publisher logos, icons, and non-scientific images."""
-    prompt = """
-Classify this image into one of three categories:
-- FIGURE: a scientific result figure (graph, gel, microscopy, phenotype, schematic, chart)
-- UNCERTAIN: could be a figure or could be decorative/structural
-- JUNK: logo, icon, banner, separator, publisher mark, header image
-
-Reply with only one word: FIGURE, UNCERTAIN, or JUNK.
-"""
-    try:
-        response = generate_content_with_retry(
-            model=_resolve_model(getattr(config, "FILTER_MODEL", None)),
-            contents=[prompt, _image_part(image_path)],
-            config_params={"temperature": 0, "top_p": 0.95},
-            retries=retries,
-        )
-        answer = response.text.strip().upper()
-        if "FIGURE" in answer:
-            return "FIGURE"
-        if "JUNK" in answer:
-            return "JUNK"
-        return "UNCERTAIN"
-    except Exception as exc:
-        print(f"Filter Error: {exc}")
-        return "UNCERTAIN"
-
-
 def validate_structured_summary(summary_text: str) -> dict:
     """Lenient 5-section validator (backwards-compatible)."""
     from prompts import lenient_required_headers
@@ -1129,33 +1063,3 @@ def _validate_against(summary_text: str, section_names: list[str], *, strict: bo
     if wikilink_warnings:
         result["wikilink_warnings"] = wikilink_warnings
     return result
-
-
-def _local_fallback_embedding(texts: list[str]) -> list:
-    """Deterministic compatibility embeddings for the otherwise-unused API."""
-    fallback_embeddings = []
-    for text in texts:
-        hash_bytes = hashlib.md5(text.encode("utf-8")).digest()
-        vector = [(byte / 127.5) - 1.0 for byte in hash_bytes]
-        fallback_embeddings.append((vector * 48)[:768])
-    return fallback_embeddings
-
-
-def get_embeddings(texts: list[str]) -> list:
-    """Return local compatibility embeddings; use local_embeddings for search."""
-    return _local_fallback_embedding([text[:8000] for text in texts])
-
-
-def query_with_image(text_query: str, image_path: Optional[str] = None) -> str:
-    """Query General Compute with optional image content."""
-    try:
-        contents: Any = [text_query, _image_part(image_path)] if image_path else text_query
-        model = getattr(config, "VISION_MODEL" if image_path else "AI_MODEL", None)
-        response = generate_content_with_retry(
-            model=_resolve_model(model),
-            contents=contents,
-            config_params={"temperature": 0, "top_p": 0.95},
-        )
-        return response.text
-    except Exception as exc:
-        return f"Query Error: {exc}"

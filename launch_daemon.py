@@ -14,12 +14,12 @@ import time
 
 HERE = "/Users/vivekanandsirohi/Desktop/antigravity/research-wiki"
 
-keys = ("sk-9aTlIwbSSlvddq1UmM7DvIlXot4n5tZ7VtVa6re9rTFA4gD2,"
-        "sk-ptRPL71D34zn9S35hGZLzSdnjTi8kPuxsKYwyCbhkUDvmEDq,"
-        "sk-fVKMFFZh3LtRiYbhqyIeJGChABLADXvfjwxUAa8Q1GnXTIcB,"
-        "sk-p2wP17cz7HNcoXdHp7sg3HdzgTs1z8sCzDsb3dy2XiaVcbIO")
-
 env = os.environ.copy()
+# driver.sh consumes HCNSEC_KEYS; feed it from GENERAL_COMPUTE_API_KEYS,
+# the same env var the rest of the repo reads.
+keys = os.environ.get("GENERAL_COMPUTE_API_KEYS", "").strip()
+if not keys:
+    sys.exit("GENERAL_COMPUTE_API_KEYS env var must be set (comma-separated keys)")
 env["HCNSEC_KEYS"] = keys
 
 pid1 = os.fork()

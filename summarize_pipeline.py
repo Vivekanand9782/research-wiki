@@ -27,10 +27,8 @@ import random
 import re
 import sys
 import time
-import traceback
 from datetime import date
 from pathlib import Path
-from typing import Any
 
 import httpx
 
@@ -223,7 +221,6 @@ def extract_json(text: str) -> dict | None:
     depth = 0
     in_str = False
     esc = False
-    span_end = None
     for i, ch in enumerate(t2):
         if esc:
             esc = False
@@ -243,13 +240,11 @@ def extract_json(text: str) -> dict | None:
         elif ch == "}":
             depth -= 1
             if depth == 0 and start is not None:
-                span_end = i
                 candidate = t2[start : i + 1]
                 r = _try(candidate)
                 if r:
                     return r
                 start = None
-                span_end = None
 
     # Last resort: any { ... } with json.loads
     for m in re.finditer(r"\{[\s\S]{200,}\}", t2):

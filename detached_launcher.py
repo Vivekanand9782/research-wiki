@@ -7,7 +7,6 @@ background-process cleanup that kills proc_* jobs on session handoff.
 import os
 import re
 import sys
-import subprocess
 
 from dotenv import load_dotenv
 

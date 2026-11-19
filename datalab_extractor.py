@@ -183,7 +183,6 @@ def convert_one(pdf_path: Path, text_path: Path | None = None,
                 raise RuntimeError(f"Datalab submit failed: {err}")
 
             request_id = submit.get("request_id")
-            request_check_url = submit.get("request_check_url")
             if not request_id:
                 raise RuntimeError("No request_id in Datalab response")
 
@@ -203,7 +202,7 @@ def convert_one(pdf_path: Path, text_path: Path | None = None,
 
             return md
 
-        except (requests.RequestException, RuntimeError) as e:
+        except (requests.RequestException, RuntimeError):
             key_budget -= 1
             if key_budget <= 0:
                 raise

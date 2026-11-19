@@ -189,8 +189,6 @@ def main() -> None:
 
     # ── Step 4: print statistics ────────────────────────────────────────
 
-    total_matches = sum(len(v) for v in map_deduped.values())
-
     print()
     print("=" * 60)
     print("  STEM-TO-PATH MAPPING  –  STATISTICS")

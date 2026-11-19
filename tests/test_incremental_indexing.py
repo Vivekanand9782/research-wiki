@@ -1,11 +1,9 @@
 """Unit tests for incremental SQLite FTS5 passage indexing and auto-sync (Milestone 1)."""
 
 import os
-import sqlite3
 import time
 from pathlib import Path
 
-import pytest
 from research_retrieval import FullTextSearch, RAW_PASSAGE_INDEX_VERSION
 
 

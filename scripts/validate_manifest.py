@@ -27,9 +27,6 @@ def main():
     with open(md_path, "r") as f:
         content = f.read()
 
-    # Find all citation keys like [[key]]
-    citation_keys_in_text = re.findall(r'\[\[(.*?)\]\]', content)
-    
     # Exclude normal wiki links that might not be citations if possible,
     # but based on GEMINI.md, [[key]] is used for citations and linked pages.
     # To differentiate, we just check if the key matches a manifest citation key.

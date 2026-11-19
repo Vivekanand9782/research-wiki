@@ -481,7 +481,7 @@ def main():
 
         except KeyboardInterrupt:
             break
-        except Exception as e:
+        except Exception:
             log_debug(f"Main loop exception: {traceback.format_exc()}")
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ Public surface preserved for backwards compatibility:
 * `EntityNormalizer` — alias-aware entity name canonicaliser.
 """
 import re
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List
 from dataclasses import dataclass
 
 from prompts import required_headers as _required_headers

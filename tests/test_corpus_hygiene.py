@@ -9,7 +9,6 @@ Covers:
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -18,14 +17,10 @@ sys.path.insert(0, str(ROOT))
 
 from research_retrieval import (
     FullTextSearch,
-    Passage,
-    SearchResult,
     _canonical_doc_key,
-    _extract_doi,
     _is_excluded_path,
     _is_reference_or_citation_passage,
 )
-from rag_engine import RAGEngine
 
 
 def test_is_excluded_path():

@@ -29,7 +29,6 @@ def probe(label, extra_payload):
         "messages": [{"role":"system","content":system},{"role":"user","content":user}],
     }
     payload.update(extra_payload)
-    tt = time.time()
     r = c.post("https://api.hcnsec.cn/v1/chat/completions",
                headers={"Authorization": f"Bearer {keys[0]}","Content-Type":"application/json"},
                json=payload, timeout=600)

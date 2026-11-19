@@ -14,16 +14,14 @@ Upgrades:
 from __future__ import annotations
 
 import collections
-import json
-import math
 import os
 import re
 import sqlite3
 import sys
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Callable, Generator, Iterable, Mapping, Sequence
+from typing import Any, Callable, Generator, Sequence
 
 # Setup workspace paths
 HERE = Path(__file__).resolve().parent
@@ -43,13 +41,11 @@ except ImportError:
 
 from research_retrieval import (  # noqa: E402
     FullTextSearch,
-    SearchResult,
     _canonical_doc_key,
-    _extract_title,
     _is_excluded_path,
     _is_reference_or_citation_passage,
 )
-from research_agent import llm, verifier, wiki_tools  # noqa: E402
+from research_agent import llm  # noqa: E402
 
 
 RAG_SYSTEM_PROMPT = """You are an evidence-grounded scientific research assistant synthesizing facts from the plant genetics and biotechnology research knowledge base.

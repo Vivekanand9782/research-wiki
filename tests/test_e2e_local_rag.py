@@ -22,14 +22,12 @@ from __future__ import annotations
 
 import json
 import math
-import os
 import re
 import sqlite3
-import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 import pytest
 
@@ -43,12 +41,8 @@ if str(WORKSPACE_ROOT) not in sys.path:
 
 from research_retrieval import (
     FullTextSearch,
-    _extract_title,
-    _is_excluded_path,
-    _is_reference_or_citation_passage,
 )
 from rag_engine import (
-    RAGEngine,
     _GENE_QTL_RE,
     _PERCENTAGE_RE,
     _NUMERIC_MEASURE_RE,

@@ -72,7 +72,7 @@ class TestChunker:
         assert "Methods" in headings
 
     def test_tiny_adjacent_chunks_merge(self):
-        from prompts import chunk_by_sections, MIN_CHUNK_CHARS
+        from prompts import chunk_by_sections
         # Two H2 sections both below MIN_CHUNK_CHARS -> should merge.
         md = "# Title\n\n" + _section("Introduction", 200) + _section("Methods", 200)
         chunks = chunk_by_sections(md)

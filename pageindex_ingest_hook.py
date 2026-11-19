@@ -27,10 +27,8 @@ import json
 import os
 import re
 import sys
-import tempfile
 import time
 from pathlib import Path
-from typing import Any
 
 try:
     import pymupdf as fitz
@@ -470,9 +468,7 @@ def sync_all_raw_papers(limit: int | None = None) -> None:
     md_files = sorted(raw_dir.rglob("*.md"))
     print(f"Found {len(md_files):,} raw markdown papers in {raw_dir}")
 
-    manifest = load_manifest()
-    indexed = manifest.get("indexed", {})
-
+    load_manifest()
     to_process = []
     for md in md_files:
         stem = md.stem

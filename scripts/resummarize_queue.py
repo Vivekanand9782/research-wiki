@@ -1,10 +1,9 @@
 """resummarize_queue.py — Centralized state and queue manager for swarm summarization."""
 
 import json
-import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 STATE_FILE = Path(__file__).resolve().parent.parent / "resummarize_state.json"
 RAW_DIR = Path(__file__).resolve().parent.parent / "raw" / "papers"

@@ -1,5 +1,3 @@
-import json
-import re
 
 raw_path = "/Users/vivekanandsirohi/Desktop/antigravity/research-wiki/raw/papers/vpc_transgene_free/Ana_Luisa_Garcia-Oliveira_2025_The_importance_of_genotyping_within_the_climate-smart_plant_breeding_value_chain_3c3050f9fd.md"
 with open(raw_path) as f:

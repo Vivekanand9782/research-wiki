@@ -2,11 +2,7 @@
 
 from __future__ import annotations
 
-import collections
-import sqlite3
-from pathlib import Path
 
-import pytest
 from rag_engine import RAGEngine, _compute_adaptive_window
 
 

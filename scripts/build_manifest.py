@@ -5,7 +5,6 @@ import os
 import datetime
 import urllib.request
 import urllib.error
-import re
 from pathlib import Path
 
 def get_current_model():

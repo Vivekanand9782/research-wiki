@@ -1,12 +1,8 @@
 """Unit tests verifying Local RAG engine optimizations."""
 
-import sqlite3
-import pytest
 from pathlib import Path
 from rag_engine import (
     RAGEngine,
-    _jaccard_similarity,
-    _extract_scientific_entities,
     verify_rag_grounding,
 )
 

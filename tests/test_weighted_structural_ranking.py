@@ -1,10 +1,8 @@
 """Unit tests for weighted structural FTS5 ranking (Milestone 2 / R4)."""
 
-import sqlite3
 from pathlib import Path
 
-import pytest
-from research_retrieval import FullTextSearch, QueryPlan, Passage
+from research_retrieval import FullTextSearch
 
 
 def _setup_ranking_corpus(tmp_path: Path) -> tuple[FullTextSearch, Path, Path]:

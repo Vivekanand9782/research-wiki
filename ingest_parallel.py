@@ -82,10 +82,8 @@ def _process_one(extractor: ResearchPaperExtractor, pdf_path: Path,
         # made large batches look successful even when every paper failed.
         return ("error", details)
     if not skip_summary and "ai_structured_summary" in data:
-        output_topic = str(data.get("topic_folder") or topic)
-        md_file = extractor.output_folder / output_topic / f"{pdf_path.stem}.md"
         try:
-            extractor.update_wiki_indexes(pdf_path.stem, md_file, data["ai_structured_summary"])
+            extractor.update_wiki_indexes(pdf_path.stem, data["ai_structured_summary"])
         except Exception as exc:
             data.setdefault("warnings", []).append(f"index-update-failed: {exc}")
     return ("ok", data)

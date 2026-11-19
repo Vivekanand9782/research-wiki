@@ -436,21 +436,6 @@ class ResearchPaperExtractor:
         # Reset for the next paper.
         self._touched_files = set()
 
-    @staticmethod
-    def _validate_runtime_config() -> None:
-        """Warn at startup when configured model names look invalid."""
-        for attr in ("AI_MODEL", "FILTER_MODEL"):
-            val = getattr(config, attr, None)
-            ok, reason = validate_ai_model_name(val)
-            if not ok:
-                print(f"⚠️  config.{attr}: {reason}")
-
-    def _load_pdf_part(self, pdf_path: Path) -> dict:
-        """Read PDF bytes as General Compute-compatible inline data."""
-        with open(pdf_path, 'rb') as f:
-            data = f.read()
-        return {"inline_data": {"mime_type": "application/pdf", "data": data}}
-
     def _truncate_for_context(self, full_raw_text: str) -> str:
         """Hard-truncate to 35,000 characters to fit within the proxy's request size limit (~43k chars total prompt).
 
@@ -458,10 +443,6 @@ class ResearchPaperExtractor:
         exceed the proxy's input payload limits which trigger WAF blocks (HTTP 451).
         """
         return full_raw_text[:35000]
-
-    def chunk_and_summarize(self, full_raw_text: str) -> str:
-        """Deprecated alias kept for backward compatibility — see _truncate_for_context."""
-        return self._truncate_for_context(full_raw_text)
 
     def generate_paper_summary(
         self, full_text: str, pdf_name: str, extracted_doi: str = None,
@@ -1092,7 +1073,7 @@ class ResearchPaperExtractor:
 
         return structured_summary
 
-    def process_single_pdf(self, pdf_path: Path, topic_folder: str, generate_rag: bool = False, skip_summary: bool = False, skip_pageindex: bool = False):
+    def process_single_pdf(self, pdf_path: Path, topic_folder: str, skip_summary: bool = False, skip_pageindex: bool = False):
         """Complete extraction pipeline for one PDF into topic-specific directories.
 
         Orchestrates the extraction steps:
@@ -1770,7 +1751,7 @@ class ResearchPaperExtractor:
         # Post-ingest lint of just the files we touched for this paper.
         self._verify_changed_pages(pdf_name)
 
-    def update_wiki_indexes(self, pdf_name: str, md_file_path: Path, structured_summary: str):
+    def update_wiki_indexes(self, pdf_name: str, structured_summary: str):
         """Auto-index the ingested paper in the wiki."""
         current_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
@@ -1865,65 +1846,6 @@ class ResearchPaperExtractor:
             print(f"  [!] Failed to auto-rename {pdf_path.name}: {e}")
 
         return pdf_path
-
-    def process_all_pdfs(self, skip_summary: bool = False):
-        """Process all PDFs in the folder, supporting subdirectories for topics."""
-        # Sanity-check the runtime config before doing any LLM work — surfaces
-        # typos in config.AI_MODEL / FILTER_MODEL early so a silent fallback
-        # doesn't leave the wiki running on the wrong backend.
-        self._validate_runtime_config()
-        # Use rglob to recursively find PDFs in subfolders
-        pdf_files = list(self.pdf_folder.rglob("*.pdf"))
-        print(f"🚀 Found {len(pdf_files)} PDF files to process\n")
-
-        all_data = []
-        for pdf_path in pdf_files:
-            # Determine topic folder based on its parent directory name
-            if pdf_path.parent == self.pdf_folder:
-                if self.pdf_folder.name == "data":
-                    topic_folder = "uncategorized"
-                else:
-                    topic_folder = self.pdf_folder.name
-            else:
-                topic_folder = pdf_path.parent.name
-
-            topic_wiki_folder = self.output_folder / topic_folder
-
-            # Check 1: Is the original filename already processed?
-            original_md_file = topic_wiki_folder / f"{pdf_path.stem}.md"
-            if original_md_file.exists():
-                print(f"\n⏭️  Skipping {pdf_path.name}: Already processed. Markdown found in {topic_folder}.")
-                continue
-
-            # Rename if necessary before processing
-            pdf_path = self.rename_pdf_if_needed(pdf_path)
-            pdf_name = pdf_path.stem
-
-            # Check 2: After renaming, is the NEW filename already processed?
-            md_file = topic_wiki_folder / f"{pdf_name}.md"
-
-            if md_file.exists():
-                print(f"\n⏭️  Skipping {pdf_name}: Already processed. Markdown found in {topic_folder}.")
-            else:
-                try:
-                    data = self.process_single_pdf(pdf_path, topic_folder, skip_summary=skip_summary)
-                    if data and data.get("extraction_method") != "failed":
-                        all_data.append(data)
-                        if not skip_summary and "ai_structured_summary" in data:
-                            self.update_wiki_indexes(pdf_name, md_file, data["ai_structured_summary"])
-                except Exception as e:
-                    # Don't let one bad PDF take down the whole batch — but DO surface the
-                    # error so it isn't silently swallowed.
-                    print(f"❌ {pdf_path.name}: {e}")
-                    try:
-                        self.logger.log_error(f"{pdf_path.name}: {e}")
-                    except Exception:
-                        # Logger failure must never mask the original error in stdout.
-                        pass
-
-        print(f"\n✅ Processing complete!")
-        self.logger.print_run_summary()
-        return all_data
 
     def extract_all_raw(self, max_workers: int = 4):
         """Phase 1: Extract raw markdown for all PDFs (no AI).
@@ -2053,7 +1975,7 @@ class ResearchPaperExtractor:
                     f.write(structured_summary)
 
                 # Index updates are guarded by self._index_lock inside the helper.
-                self.update_wiki_indexes(pdf_name, md_file, structured_summary)
+                self.update_wiki_indexes(pdf_name, structured_summary)
 
                 # Concept/entity fan-out is parallel inside this paper, and each
                 # seed-page write is guarded by a per-path lock for safety against

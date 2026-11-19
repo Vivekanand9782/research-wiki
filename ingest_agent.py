@@ -550,7 +550,7 @@ def _render_one(stem: str, force: bool = False, dry_run: bool = False) -> dict[s
             output_folder=str(DEFAULT_OUTPUT_FOLDER.parent),
             text_folder=str(DEFAULT_TEXT_FOLDER),
         )
-        extractor.update_wiki_indexes(stem, wiki_page, markdown)
+        extractor.update_wiki_indexes(stem, markdown)
         report["gates"]["indexes"] = {"pass": True}
     except Exception as exc:
         report["gates"]["indexes"] = {"pass": False, "error": str(exc)}

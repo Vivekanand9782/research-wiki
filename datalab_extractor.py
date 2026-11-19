@@ -10,7 +10,6 @@ from __future__ import annotations
 import os
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import requests
@@ -41,10 +40,6 @@ class KeyRotator:
         self._windows: dict[str, list[float]] = {k: [] for k in self._keys}
         self._depleted: set[str] = set()  # rate-limited (recoverable, 429)
         self._exhausted: set[str] = set()  # permanently dead keys (403 / invalid)
-
-    @property
-    def total_capacity(self) -> int:
-        return len(self._keys) * MAX_PER_KEY
 
     def has_live_keys(self) -> bool:
         with self._lock:
@@ -217,34 +212,4 @@ def convert_one(pdf_path: Path, text_path: Path | None = None,
     raise RuntimeError(f"Failed to convert {pdf_path.name}")
 
 
-def convert_batch(pdf_paths: list[tuple[Path, Path]],
-                  mode: str = "fast",
-                  max_workers: int | None = None) -> list[tuple[Path, Path, str, Exception | None]]:
-    """Convert multiple PDFs in parallel.
 
-    Args:
-        pdf_paths: List of (pdf_path, text_path)
-        mode: "fast"
-        max_workers: Defaults to total key capacity (7 keys * 25 = 175)
-
-    Returns:
-        List of (pdf_path, text_path, markdown_or_empty, error_or_none)
-    """
-    if max_workers is None:
-        max_workers = 12
-
-    results: list[tuple[Path, Path, str, Exception | None]] = []
-
-    def _worker(pdf_path: Path, text_path: Path):
-        try:
-            md = convert_one(pdf_path, text_path, mode=mode, max_retries=2)
-            return (pdf_path, text_path, md, None)
-        except Exception as e:
-            return (pdf_path, text_path, "", e)
-
-    with ThreadPoolExecutor(max_workers=max_workers) as ex:
-        futures = {ex.submit(_worker, p, tp): (p, tp) for p, tp in pdf_paths}
-        for f in as_completed(futures):
-            results.append(f.result())
-
-    return results

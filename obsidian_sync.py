@@ -151,37 +151,6 @@ class ObsidianSync:
         index_path = self.obsidian_vault / "index.md"
         index_path.write_text(index_content)
     
-    def create_dataview_index(self):
-        """Create Dataview.js index files for Obsidian."""
-        # Sources index
-        sources_index = """# Papers
-
-```dataview
-TABLE WITHOUT ID
-  file.link as Paper,
-  date_created as Created,
-  type
-FROM "sources"
-SORT file.name ASC
-```
-"""
-        (self.obsidian_vault / "sources" / "index.md").write_text(sources_index)
-        
-        # Entities index
-        entities_index = """# Entities
-
-```dataview
-TABLE WITHOUT ID
-  file.link as Entity,
-  type,
-  source_count as Sources
-FROM "entities"
-SORT file.name ASC
-```
-"""
-        (self.obsidian_vault / "entities" / "index.md").write_text(entities_index)
-
-
 if __name__ == "__main__":
     sync = ObsidianSync()
     sync.sync(clean=False)

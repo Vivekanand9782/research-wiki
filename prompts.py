@@ -1133,11 +1133,6 @@ def headers_for(paper_type: str) -> list[str]:
     return [s.name for s in sections_for(paper_type)]
 
 
-def format_required_headings_block_for(paper_type: str) -> str:
-    """Like ``format_required_headings_block`` but per paper type."""
-    return "\n".join(s.heading for s in sections_for(paper_type))
-
-
 def format_section_rules_block_for(paper_type: str) -> str:
     """Render the section rules block for the prompt based on paper type."""
     lines = []

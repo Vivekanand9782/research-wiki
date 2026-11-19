@@ -366,12 +366,6 @@ def get_api_keys() -> list[str]:
     return []
 
 
-def get_primary_api_key() -> str:
-    """Return the first available API key or empty string."""
-    keys = get_api_keys()
-    return keys[0] if keys else ""
-
-
 def get_max_output_tokens(model: str | None = None) -> int:
     """Return max completion token ceiling for a model."""
     m = model or get_model()
